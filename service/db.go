@@ -11,36 +11,23 @@ import (
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"os"
 )
 
 var (
-	db  *gorm.DB
+	DB  *gorm.DB
 	rdb *redis.Client
 	err error
 )
 
-func Init(ctx context.Context) {
-	InitDB()
-}
-
 func InitDB() {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		utils.Config.Mysql.UserName,
-		utils.Config.Mysql.Passwd,
-		utils.Config.Mysql.Address,
-		utils.Config.Mysql.Database)
-	// fmt.Println(dsn)
-	InitMysql(dsn)
-	if os.Getenv("debug") == "1" {
-		createTable()
-	}
-
-	//initRedis(model.Config.)
-}
-
-func InitMysql(dsn string) {
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=%s&parseTime=True&loc=%s",
+		utils.Config.Datasource.UserName,
+		utils.Config.Datasource.Password,
+		utils.Config.Datasource.Host,
+		utils.Config.Datasource.Database,
+		utils.Config.Datasource.Charset, utils.Config.Datasource.Loc)
+	log.Printf(fmt.Sprintf("dsn:", dsn))
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
@@ -50,14 +37,17 @@ func InitMysql(dsn string) {
 		panic("failed to connect database")
 	}
 	logger.Info().Msg("数据库初始化成功...")
+	createTable()
+	log.Info().Msg("数据库建表成功...")
 }
 
-//lint:ignore U1000 ignore unused lint
 func createTable() {
-	if err := db.AutoMigrate(&model.User{}); err != nil {
-		logger.Error().Stack().Err(err)
+	if err := DB.AutoMigrate(&model.User{}); err != nil {
+		log.Printf("建表时出现异常", err)
 	}
-
+	if err := DB.AutoMigrate(&model.ActiveCode{}); err != nil {
+		log.Printf("建表时出现异常", err)
+	}
 }
 
 func initRedis(uri string) {

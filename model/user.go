@@ -1,34 +1,24 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
-	Uid          int64 `gorm:"uniqueIndex"`
-	IsBot        bool
-	FirstName    string `gorm:"type:varchar(30)"`
-	LastName     string `gorm:"type:varchar(30)"`
-	Username     string `gorm:"type:varchar(30)"`
-	LanguageCode string `gorm:"type:varchar(20)"`
+	UserName  string `form:"username" binding:"required" gorm:"user_name; uniqueIndex;primaryKey;type:varchar(15)"`
+	Password  string `form:"password" binding:"required" gorm:"password; size:255; notnull"`
+	Telephone string `form:"telephone" gorm:"size:11"`
 }
 
-type Config struct {
-	Token       string `yaml:"token"`
-	WebhookUrl  string `yaml:"webhook_url"`
-	CertFile    string `yaml:"cert_file"`
-	KeyFile     string `yaml:"key_file"`
-	ApiPath     string `yaml:"api_path"`
-	URL         string `yaml:"url"`
-	DatabaseURL string `yaml:"database_url"`
-	RedisURL    string `yaml:"redis_url"`
-	Debug       bool   `yaml:"debug"`
-	Mysql       Mysql  `yaml:"mysql"`
-	Dsn         string `yaml:"dsn"`
+type UserDTO struct {
+	UserName  string `json:"userName"`
+	Telephone string `json:"telephone"`
 }
 
-type Mysql struct {
-	Address  string `yaml:"address"`
-	Database string `yaml:"database"`
-	UserName string `yaml:"user_name"`
-	Passwd   string `yaml:"passwd"`
+func ToUserDTO(user User) UserDTO {
+	return UserDTO{
+		UserName:  user.UserName,
+		Telephone: user.Telephone,
+	}
 }

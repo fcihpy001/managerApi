@@ -9,10 +9,18 @@ database_url:
   "postgresql://postgres:@localhost:5432/postgres"
 redis_url:
   "redis://localhost:6379/0"
-mysql:
-  address: 127.0.0.1:3306
-  database: testdb
-  user_name: root
-  passwd: root123
 
+
+server:
+  host: 127.0.0.1
+  port: 8081
+datasource:
+  driverName: mysql
+  host: 127.0.0.1
+  port: 3306
+  database: managerdb
+  username: manager
+  password: manager
+  charset: utf8mb4
+  loc: Local
 debug: true
