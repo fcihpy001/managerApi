@@ -26,6 +26,7 @@ func Login(c *gin.Context) {
 	//判断密码是否正确
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestUser.Password)); err != nil {
 		ErrorResp(c, 400, "密码错误", nil)
+		return
 	}
 
 	//	发送token

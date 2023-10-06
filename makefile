@@ -5,7 +5,7 @@ linux:
 
 .PHONY: mac
 mac:
-	go build -o ./build/managerapi main.go
+	go build -o ./build/manager main.go
 
 
 .PHONY: clean
@@ -17,7 +17,6 @@ clean:
 all:
 	make clean
 	make linux
-	make mac
 
 
 

@@ -16,7 +16,7 @@ var (
 )
 
 func InitConfig() {
-	yamlFile, err := os.ReadFile("./config.yaml")
+	yamlFile, err := os.ReadFile("./config_dev.yaml")
 	if err != nil {
 		log.Println(err)
 	}
@@ -41,7 +41,7 @@ func RandString(length int) string {
 }
 
 func RandStringAndNumber(length int) string {
-	var letters = []byte("abcdefghjkmnpqrstuvwxyz123456789")
+	var letters = []byte("ABCDEF1234567890")
 	result := make([]byte, length)
 
 	source := rand.NewSource(time.Now().UnixNano())

@@ -4,6 +4,7 @@ import (
 	"ManagerApi/model"
 	"ManagerApi/service"
 	"ManagerApi/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"time"
@@ -24,6 +25,7 @@ func Create(ctx *gin.Context) {
 			GroupName:  code.GroupName,
 			Status:     0,
 			Address:    "",
+			NFTType:    code.NFTType,
 			Expiration: time.Now().Add(time.Duration(code.Days*24) * time.Hour),
 		}
 		models = append(models, c)
@@ -69,7 +71,7 @@ func Update(ctx *gin.Context) {
 		return
 	}
 	c := model.ActiveCode{
-		Code:    code,
+		//Code:    code,
 		Address: address,
 	}
 
@@ -81,5 +83,35 @@ func Update(ctx *gin.Context) {
 		return
 	}
 	ErrorResp(ctx, 400, "code无效", nil)
+}
 
+func Enable(ctx *gin.Context) {
+	//	根据code,找到nft
+	code := ctx.PostForm("code")
+
+	var result struct {
+		Code string `json:"code"`
+		NFT  string `json:"nft"`
+		Sign string `json:"sign"`
+	}
+
+	// 获取NFT地址
+	service.DB.Table("active_code").
+		Select("active_code.code AS code,nft.contract_address AS NFT").
+		Joins("INNER JOIN nft ON nft.type = active_code.nft_type").
+		Where("active_code.code = ?", code).
+		Scan(&result)
+
+	//返回NFT合约地址和签名数据
+	hash, err := utils.Eip712Digest(result.NFT, result.Code)
+	if err != nil {
+		fmt.Println("")
+	}
+	fmt.Println("digest:", hash.String())
+
+	sign, err := utils.Eip712Sign(result.NFT, result.Code)
+	fmt.Println("signature:", sign)
+	result.Sign = sign
+
+	SuccessResp(ctx, "", result)
 }

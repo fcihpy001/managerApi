@@ -3,7 +3,6 @@ package service
 import (
 	"ManagerApi/model"
 	"ManagerApi/utils"
-	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog/log"
@@ -48,20 +47,23 @@ func createTable() {
 	if err := DB.AutoMigrate(&model.ActiveCode{}); err != nil {
 		log.Printf("建表时出现异常", err)
 	}
+	if err := DB.AutoMigrate(&model.NFT{}); err != nil {
+		log.Printf("建表时出现异常", err)
+	}
 }
 
-func initRedis(uri string) {
-	opts, err := redis.ParseURL(uri)
-	if err != nil {
-		panic(err)
-	}
-
-	rdb = redis.NewClient(opts)
-	if err = rdb.Ping(context.Background()).Err(); err != nil {
-		panic(err)
-	}
-	logger.Info().Msg("Redis 连接成功")
-
-}
+//func initRedis(uri string) {
+//	opts, err := redis.ParseURL(uri)
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	rdb = redis.NewClient(opts)
+//	if err = rdb.Ping(context.Background()).Err(); err != nil {
+//		panic(err)
+//	}
+//	logger.Info().Msg("Redis 连接成功")
+//
+//}
 
 var logger = log.With().Str("module", "services").Logger()

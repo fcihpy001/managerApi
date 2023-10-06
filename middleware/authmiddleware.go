@@ -11,7 +11,7 @@ import (
 
 func AuthMiddleWare() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		tokenStr := ctx.GetHeader("Authorization")
+		tokenStr := ctx.GetHeader("X-Token")
 		fmt.Print("请求token", tokenStr)
 
 		if tokenStr == "" || !strings.HasPrefix(tokenStr, "Bearer ") {
