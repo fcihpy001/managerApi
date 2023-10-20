@@ -16,11 +16,11 @@ server:
   port: 8081
 datasource:
   driverName: mysql
-  host: 127.0.0.1:13306
-  port: 13306
+  host: 127.0.0.1:3306
+  port: 3306
   database: defi
-  username: root
-  password: openIM123
+  username: defi
+  password: defi1688
   charset: utf8mb4
   loc: Local
 debug: true
