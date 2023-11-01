@@ -22,3 +22,10 @@ func ToUserDTO(user User) UserDTO {
 		Telephone: user.Telephone,
 	}
 }
+
+// 登录记录
+type LoginRecord struct {
+	gorm.Model
+	Wallet string `json:"wallet" form:"wallet" binding:"required"`
+	Source string `json:"source" form:"source" binding:"required"`
+}

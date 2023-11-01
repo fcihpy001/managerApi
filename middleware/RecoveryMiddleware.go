@@ -1,16 +1,21 @@
 package middleware
 
 import (
-	"ManagerApi/api"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func RecoveryMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
-				api.ErrorResp(ctx, 405, fmt.Sprint(err), nil)
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+					"code": 405,
+					"msg":  fmt.Sprint(err),
+					"data": nil,
+				})
+				ctx.Abort()
 			}
 		}()
 

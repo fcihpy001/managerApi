@@ -19,8 +19,8 @@ const (
 	airDropVersion = "1.0"
 	airdropAddr    = "0x4fC9E7E947Bb2269E0B356B038c3543f6b2f7f0C"
 
-	signerPrivateKey = "9465deb9d15d9ab3975b33aa15cdd738570ad6f8a0b9822fc0c68513162d6ec9"
-	signerAddr       = "0x56E3dEEdF653Cd20312ea5700F5aeAF349cB1993"
+	signerPrivateKey = "8793cb44dbaf5a1e0adc780714b90f719620a63e509b334e8cc7224f77321581"
+	signerAddr       = "0x6F17FeF0499809cC3988a11e625e8FcFF1C4be29"
 	chainId          = 97
 )
 
@@ -32,7 +32,6 @@ var (
 func init() {
 	domainSeparator = buildDomainSeparator()
 	rand.Seed(time.Now().UnixMilli())
-	validatePrivateKeyAddress()
 
 	//将以十六进制表示的私钥转换为ECDSA（椭圆曲线数字签名算法）私钥对象
 	key, err := crypto.HexToECDSA(signerPrivateKey)
@@ -40,6 +39,7 @@ func init() {
 		panic("private key invalid: " + err.Error())
 	}
 	privateKey = key
+	validatePrivateKeyAddress()
 }
 
 // 签名
@@ -53,6 +53,7 @@ func Eip712Sign(nftAddr string, code string) (string, error) {
 	//使用私钥对数据进行签名
 	sig, err := crypto.Sign(hash.Bytes(), privateKey)
 	if err != nil {
+		log.Println("私钥签名错误:", err)
 		return "", err
 	}
 	// THIS IS VERY IMPORTANT!!! add version by 27

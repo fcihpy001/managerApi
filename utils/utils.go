@@ -2,7 +2,10 @@ package utils
 
 import (
 	"ManagerApi/model"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v3"
 	"log"
 	"math/rand"
@@ -16,7 +19,13 @@ var (
 )
 
 func InitConfig() {
-	yamlFile, err := os.ReadFile("./config_dev.yaml")
+	// 加载 .env 文件
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("无法加载 .env 文件: %v", err)
+	}
+	log.Println("env文件加载成功")
+
+	yamlFile, err := os.ReadFile("./config.yaml")
 	if err != nil {
 		log.Println(err)
 	}
@@ -51,4 +60,14 @@ func RandStringAndNumber(length int) string {
 	}
 
 	return strings.ToUpper(string(result))
+}
+
+func HashStr(str1 string, str2 string, str3 string) string {
+	hasher := sha256.New()
+	hasher.Write([]byte(str1))
+	hasher.Write([]byte(str2))
+	hasher.Write([]byte(str3))
+	hashBytes := hasher.Sum(nil)
+	hashHex := hex.EncodeToString(hashBytes)
+	return hashHex
 }

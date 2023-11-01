@@ -1,15 +1,26 @@
 package api
 
 import (
+	"ManagerApi/middleware"
 	"ManagerApi/model"
 	"ManagerApi/service"
 	"ManagerApi/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
 
-func Login(c *gin.Context) {
+func SetupUserRouter(router *gin.Engine) {
+	v1Router := router.Group("/v1/user")
+	v1Router.Use(gin.Logger())
+	v1Router.POST("login", login)
+	v1Router.POST("register", register)
+	v1Router.GET("info", middleware.AuthMiddleWare(), info)
+	v1Router.POST("wallet/login", middleware.VerifyHeader(), walletLogin)
+}
+
+func login(c *gin.Context) {
 	requestUser := &model.User{}
 	if err := c.ShouldBind(&requestUser); err != nil {
 		ErrorResp(c, 405, "参数缺失", nil)
@@ -17,12 +28,13 @@ func Login(c *gin.Context) {
 	}
 	//判断用户是否存在
 	user := model.User{}
-	service.DB.Where("user_name = ?", requestUser.UserName).First(&user)
+	service.GetDB().Where("user_name = ?", requestUser.UserName).First(&user)
 	if user.ID == 0 {
 		ErrorResp(c, 400, "用户不存在", nil)
 		return
 	}
 
+	fmt.Println("passwod")
 	//判断密码是否正确
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestUser.Password)); err != nil {
 		ErrorResp(c, 400, "密码错误", nil)
@@ -40,7 +52,7 @@ func Login(c *gin.Context) {
 	SuccessResp(c, "登录成功", gin.H{"token": token})
 }
 
-func Register(c *gin.Context) {
+func register(c *gin.Context) {
 
 	var header model.HeaderData
 	c.BindHeader(&header)
@@ -66,7 +78,7 @@ func Register(c *gin.Context) {
 
 	// 数据入库
 	user.Password = string(hashPasswd)
-	err = service.DB.Create(&user).Error
+	err = service.GetDB().Create(&user).Error
 	if err != nil {
 		response(c, http.StatusUnprocessableEntity, 500, "数据入库异常", nil)
 		return
@@ -83,7 +95,7 @@ func Register(c *gin.Context) {
 	SuccessResp(c, "注册成功", gin.H{"token": token})
 }
 
-func Info(ctx *gin.Context) {
+func info(ctx *gin.Context) {
 	user, _ := ctx.Get("user")
 	SuccessResp(ctx, "success", model.ToUserDTO(user.(model.User)))
 }
