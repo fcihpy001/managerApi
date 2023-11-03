@@ -104,7 +104,7 @@ func nftList(ctx *gin.Context) {
 
 	if len(to) > 0 && len(nftType) > 0 {
 		service.GetDB().
-			Where("`to` = ? AND `type` = ? AND `status` = ?", to, nftType, status_int).
+			Where("`wallet` = ? AND `type` = ? AND `status` = ?", to, nftType, status_int).
 			Find(&list)
 	} else {
 		service.GetDB().Find(&list)
@@ -190,7 +190,7 @@ func rewardList(ctx *gin.Context) {
 	fmt.Println("wallet", request.Wallet)
 	sql := fmt.Sprintf("SELECT * FROM reward ")
 	if len(request.Wallet) > 0 {
-		sql = fmt.Sprintf("SELECT * FROM reward WHERE wallet='%s'", request.Wallet)
+		sql = fmt.Sprintf("SELECT * FROM reward WHERE `wallet`='%s' ", request.Wallet)
 	}
 
 	if len(request.StartDate) > 0 {

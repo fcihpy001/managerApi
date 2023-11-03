@@ -61,7 +61,7 @@ func list(ctx *gin.Context) {
 
 	// 分页
 	var codes []model.ActiveCode
-	service.GetDB().Order("id desc").Offset((pageNum - 1) * pageSize).Limit(pageSize).Find(&codes)
+	service.GetDB().Where("wallet_address = ''").Order("id desc").Offset((pageNum - 1) * pageSize).Limit(pageSize).Find(&codes)
 
 	// 记录的总条数
 	var total int64

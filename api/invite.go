@@ -5,7 +5,6 @@ import (
 	"ManagerApi/model"
 	"ManagerApi/service"
 	"github.com/gin-gonic/gin"
-	"strconv"
 	"time"
 )
 
@@ -33,17 +32,17 @@ func createInvite(ctx *gin.Context) {
 	addr := ctx.PostForm("wallet")
 	referrer := ctx.PostForm("referrer")
 	source := ctx.PostForm("source")
-	count := ctx.PostForm("tpl_amount")
+	//count := ctx.PostForm("tpl_amount")
 	if len(addr) < 40 || len(referrer) < 40 {
 		ErrorResponse(ctx, 403, _const.ErrorBodyMsg)
 		return
 	}
-	c, _ := strconv.Atoi(count)
+	//c, _ := strconv.Atoi(count)
 	var wallet model.Wallet
 	wallet.Address = addr
 	wallet.Referrer = referrer
 	wallet.BindTime = time.Now().Format("2006-03-21 11:25:33")
-	wallet.TPLAmount = uint(c)
+	//wallet.TPLAmount = uint(c)
 	wallet.BindSource = model.BindSourceType(source)
 
 	updateWallet(wallet)

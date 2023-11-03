@@ -36,7 +36,7 @@ type Wallet struct {
 	gorm.Model
 	Address            string         `json:"address" gorm:"uniqueIndex;type:char(42)"`
 	USDTAmount         uint           `json:"usdt_amount"`
-	TPLAmount          uint           `json:"tpl_amount"`
+	TPLAmount          string         `json:"tpl_amount"`
 	Referrer           string         `json:"referrer"`
 	InviteAmount       uint           `json:"invite_amount"`
 	BindTime           string         `json:"bind_time"`
@@ -81,7 +81,7 @@ type Coin struct {
 type Rank struct {
 	Type    RankType
 	Address string `json:"address"`
-	Amount  uint64 `json:"amount"`
+	Amount  string `json:"amount"`
 }
 
 type RankType string
@@ -109,12 +109,13 @@ type ListRequest struct {
 // 奖励
 type Reward struct {
 	gorm.Model
+	RewardTime string     `json:"reward_time"`
 	TxHash     string     `gorm:"tx_hash;uniqueIndex; type:char(50);"`
 	RewardType RewardType `json:"reward_type" form:"reward_type" binding:"required"`
 	Wallet     string     `json:"wallet" form:"wallet" binding:"required"`
 	NFTType    NFTType    `json:"nft_type" form:"nft_type" `
-	NFTID      uint       `json:"nft_id" form:"nft_id" `
-	USDTAmount uint       `json:"usdt_amount" form:"usdt_amount"`
+	NFTID      uint       `json:"nft_id" form:"nft_id"`
+	USDTAmount string     `json:"usdt_amount" form:"usdt_amount"`
 	Status     int        `json:"status"  form:"status" `
 	Remark     string     `json:"remark"  form:"remark" gorm:"default:1"`
 	Source     string     `json:"source"  form:"source" `
@@ -204,5 +205,6 @@ const (
 type WithdrawResp struct {
 	CreatedAt time.Time `json:"created_at"`
 	To        string    `json:"wallet"`
-	Amount    uint      `json:"amount"`
+	Amount    string    `json:"amount"`
+	BlockTime string    `json:"block_time"`
 }

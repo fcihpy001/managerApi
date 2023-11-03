@@ -64,13 +64,13 @@ func walletInfo(ctx *gin.Context) {
 		ErrorResponse(ctx, 403, _const.ErrorBodyMsg)
 		return
 	}
-	var info model.Wallet
-	err := service.GetDB().Where("address = ?", wallet).Find(&info).Error
+	var walletInfo model.Wallet
+	err := service.GetDB().Where("address = ?", wallet).First(&walletInfo).Error
 	if err != nil {
 		ErrorResp(ctx, 406, "数据查询错误", nil)
 		return
 	}
-	SuccessResponse(ctx, info)
+	SuccessResponse(ctx, walletInfo)
 }
 
 func withdrawList(ctx *gin.Context) {
@@ -85,7 +85,7 @@ func withdrawList(ctx *gin.Context) {
 
 	fmt.Println("wallet", request.Wallet)
 	sql := fmt.Sprintf("SELECT * FROM token WHERE `from`='%s' AND `to`='%s' "+
-		"AND `type`='usdt' AND `source`='reward'", utils.CouponAddress(), request.Wallet)
+		"AND `type`='usdt' AND `source`='reward' ORDER BY created_at DESC", utils.CouponAddress(), request.Wallet)
 
 	if request.PageRequest.PageSize > 0 {
 		sql += fmt.Sprintf(" LIMIT %d OFFSET %d", request.PageRequest.PageSize, offset)
