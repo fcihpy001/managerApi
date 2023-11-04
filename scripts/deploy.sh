@@ -21,6 +21,8 @@ else
 fi
 
 # 启动新的程序
+echo "执行重启进程操作..."
+ssh -t "$remote_server" "/opt/managerAPI/restart.sh"
 
 
 echo "部署完成"

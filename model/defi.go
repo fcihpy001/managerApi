@@ -109,7 +109,7 @@ type ListRequest struct {
 // 奖励
 type Reward struct {
 	gorm.Model
-	RewardTime string     `json:"reward_time"`
+	BlockTime  string     `json:"block_time"`
 	TxHash     string     `gorm:"tx_hash;uniqueIndex; type:char(50);"`
 	RewardType RewardType `json:"reward_type" form:"reward_type" binding:"required"`
 	Wallet     string     `json:"wallet" form:"wallet" binding:"required"`
@@ -119,6 +119,12 @@ type Reward struct {
 	Status     int        `json:"status"  form:"status" `
 	Remark     string     `json:"remark"  form:"remark" gorm:"default:1"`
 	Source     string     `json:"source"  form:"source" `
+}
+
+type RewardResp struct {
+	BlockTime  string     `json:"block_time"`
+	RewardType RewardType `json:"reward_type" form:"reward_type" binding:"required"`
+	USDTAmount string     `json:"usdt_amount" form:"usdt_amount"`
 }
 
 type RewardType string
@@ -142,13 +148,14 @@ type USDT struct {
 // nft
 type NFT struct {
 	gorm.Model
-	Type   NFTType `gorm:"uniqueIndex:type_id_idx; type:char(10)"`
-	NFTID  uint    `gorm:"uniqueIndex:type_id_idx"`
-	From   string  `gorm:"from"`
-	To     string  `gorm:"to"`
-	Source string  `gorm:"source"`
-	Status int     `gorm:"default:1"`
-	Remark string  `gorm:"remark"`
+	BlockTime string
+	Type      NFTType `gorm:"uniqueIndex:type_id_idx; type:char(10)"`
+	NFTID     uint    `gorm:"uniqueIndex:type_id_idx"`
+	From      string  `gorm:"from"`
+	To        string  `gorm:"to"`
+	Source    string  `gorm:"source"`
+	Status    int     `gorm:"default:1"`
+	Remark    string  `gorm:"remark"`
 }
 type NFTType string
 
@@ -185,14 +192,15 @@ type DepositRequest struct {
 
 type Token struct {
 	gorm.Model
-	Type   TokenType
-	TxHash string `gorm:"tx_hash;uniqueIndex; type:char(50);"`
-	Source string `form:"source" binding:"required"`
-	From   string `form:"from" binding:"required"`
-	To     string `form:"to" binding:"required"`
-	Amount uint   `form:"amount" binding:"required"`
-	Status int    `form:"status" gorm:"default:1"`
-	Remark string `form:"remark"`
+	Type      TokenType
+	BlockTime string
+	TxHash    string `gorm:"tx_hash;uniqueIndex; type:char(50);"`
+	Source    string `form:"source" binding:"required"`
+	From      string `form:"from" binding:"required"`
+	To        string `form:"to" binding:"required"`
+	Amount    uint   `form:"amount" binding:"required"`
+	Status    int    `form:"status" gorm:"default:1"`
+	Remark    string `form:"remark"`
 }
 
 type TokenType string

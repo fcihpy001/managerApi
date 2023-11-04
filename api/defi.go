@@ -184,7 +184,7 @@ func rewardList(ctx *gin.Context) {
 		ErrorResponse(ctx, 403, _const.ErrorBodyMsg)
 		return
 	}
-	var rewards []model.Reward
+	var rewards []model.RewardResp
 	offset := (request.PageRequest.PageNum - 1) * request.PageRequest.PageSize
 
 	fmt.Println("wallet", request.Wallet)
